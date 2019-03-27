@@ -1,0 +1,11 @@
+{
+  "required": true,
+  "package": "team.reborn.techrebornx.client.mixin",
+  "compatibilityLevel": "JAVA_8",
+  "mixins": [
+	"RatingMixin"
+  ],
+  "injectors": {
+	"defaultRequire": 1
+  }
+}
