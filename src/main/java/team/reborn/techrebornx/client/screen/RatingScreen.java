@@ -29,10 +29,10 @@ public class RatingScreen extends Screen {
 	}
 
 	@Override
-	public void initialize(MinecraftClient client, int int_1, int int_2) {
-		super.initialize(client, int_1, int_2);
-		x = (this.screenWidth - 184) / 2;
-		y = (this.screenHeight - 116) / 2;
+	public void init(MinecraftClient client, int int_1, int int_2) {
+		super.init(client, int_1, int_2);
+		x = (this.width - 184) / 2;
+		y = (this.height - 116) / 2;
 		for (int i = 1; i <= 5; i++) {
 			addButton(new RateButton(x + 33 + 24 * (i - 1), y + 31, i));
 		}
@@ -50,31 +50,28 @@ public class RatingScreen extends Screen {
 		if (!buttonHovered) {
 			rating = 0;
 		}
-		this.client.getTextureManager().bindTexture(RATING_TEXTURES);
-		this.drawTexturedRect(x, y, 0, 0, 184, 116);
+		this.minecraft.getTextureManager().bindTexture(RATING_TEXTURES);
+		this.blit(x, y, 0, 0, 184, 116);
 		String pls = "Please rate your experience with";
 		String trx = "Tech Reborn X";
-		long time = MinecraftClient.getInstance().world.getTime();
-		this.fontRenderer.draw(pls, (this.screenWidth - this.fontRenderer.getStringWidth(pls)) / 2 + 1, y + 4 + 1, new Random(time + 100 - time % 50).nextInt(0xAAAAAA));
-		this.fontRenderer.draw(pls, (this.screenWidth - this.fontRenderer.getStringWidth(pls)) / 2, y + 4, new Random(time + 150 - time % 50).nextInt(0xAAAAAA));
-		this.fontRenderer.draw(trx, (this.screenWidth - this.fontRenderer.getStringWidth(trx)) / 2 + 1, y + 4 + 1 + 10, new Random(time - time % 50).nextInt(0xAAAAAA));
-		this.fontRenderer.draw(trx, (this.screenWidth - this.fontRenderer.getStringWidth(trx)) / 2, y + 4 + 10, new Random(time + 50 - time % 50).nextInt(0xAAAAAA));
+		this.font.draw(pls, (this.width - this.font.getStringWidth(pls)) / 2, y + 5, 0x3333FF);
+		this.font.draw(trx, (this.width - this.font.getStringWidth(trx)) / 2, y + 5 + 10, 0x3333FF);
 
 		String hax = "Please note that username,";
 		String hax2 = "password, and social security";
 		String hax3 = "data is sent to Team Reborn (©)";
 		String hax4 = "servers as a result of rating.";
 		String hax5 = "Rate at your own risk.";
-		this.fontRenderer.draw(hax, (this.screenWidth - this.fontRenderer.getStringWidth(hax)) / 2, y + 4 + 57, 0xAAAAAA);
-		this.fontRenderer.draw(hax2, (this.screenWidth - this.fontRenderer.getStringWidth(hax2)) / 2, y + 4 + 67, 0xAAAAAA);
-		this.fontRenderer.draw(hax3, (this.screenWidth - this.fontRenderer.getStringWidth(hax3)) / 2, y + 4 + 77, 0xAAAAAA);
-		this.fontRenderer.draw(hax4, (this.screenWidth - this.fontRenderer.getStringWidth(hax4)) / 2, y + 4 + 87, 0xAAAAAA);
-		this.fontRenderer.draw(hax5, (this.screenWidth - this.fontRenderer.getStringWidth(hax5)) / 2, y + 4 + 97, 0xAA8888);
+		this.font.draw(hax, (this.width - this.font.getStringWidth(hax)) / 2, y + 4 + 57, 0xAAAAAA);
+		this.font.draw(hax2, (this.width - this.font.getStringWidth(hax2)) / 2, y + 4 + 67, 0xAAAAAA);
+		this.font.draw(hax3, (this.width - this.font.getStringWidth(hax3)) / 2, y + 4 + 77, 0xAAAAAA);
+		this.font.draw(hax4, (this.width - this.font.getStringWidth(hax4)) / 2, y + 4 + 87, 0xAAAAAA);
+		this.font.draw(hax5, (this.width - this.font.getStringWidth(hax5)) / 2, y + 4 + 97, 0xAA8888);
 		super.render(mouseX, mouseY, elapsedTicks);
 	}
 
 	@Override
-	public boolean doesEscapeKeyClose() {
+	public boolean shouldCloseOnEsc() {
 		return false;
 	}
 
@@ -111,9 +108,9 @@ public class RatingScreen extends Screen {
 			GlStateManager.blendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
 			GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
 			if (isHovered() || rating >= buttonRating) {
-				this.drawTexturedRect(this.x, this.y, 0, 116, 22, 21);
+				this.blit(this.x, this.y, 0, 116, 22, 21);
 			} else {
-				this.drawTexturedRect(this.x, this.y, 22, 116, 22, 21);
+				this.blit(this.x, this.y, 22, 116, 22, 21);
 			}
 		}
 	}

@@ -1,0 +1,6 @@
+{
+  "parent": "item/generated",
+  "textures": {
+    "layer0": "techrebornx:item/nak_coolant_simple"
+  }
+}
