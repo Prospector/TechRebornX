@@ -1,4 +1,4 @@
-package team.reborn.techrebornx.container;
+package team.reborn.tech.x.container;
 
 import net.minecraft.container.Container;
 import net.minecraft.container.Slot;

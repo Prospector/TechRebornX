@@ -1,4 +1,4 @@
-package team.reborn.techrebornx.client.screen;
+package team.reborn.tech.x.client.screen;
 
 import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.client.MinecraftClient;
@@ -8,9 +8,7 @@ import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.StringTextComponent;
 import net.minecraft.util.Identifier;
-import team.reborn.techrebornx.TechRebornX;
-
-import java.util.Random;
+import team.reborn.tech.x.TechRebornX;
 
 public class RatingScreen extends Screen {
 

@@ -1,4 +1,4 @@
-package team.reborn.techrebornx;
+package team.reborn.tech.x;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.client.itemgroup.FabricItemGroupBuilder;
@@ -10,9 +10,9 @@ import net.minecraft.item.ItemGroup;
 import net.minecraft.item.block.BlockItem;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
-import team.reborn.techrebornx.block.SlotMachineBlock;
-import team.reborn.techrebornx.client.screen.SlotMachineScreen;
-import team.reborn.techrebornx.container.SlotMachineContainer;
+import team.reborn.tech.x.block.SlotMachineBlock;
+import team.reborn.tech.x.client.screen.SlotMachineScreen;
+import team.reborn.tech.x.container.SlotMachineContainer;
 
 public class TechRebornX implements ModInitializer {
 	public static final String MOD_ID = "techrebornx";

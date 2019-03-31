@@ -1,4 +1,4 @@
-package team.reborn.techrebornx.block;
+package team.reborn.tech.x.block;
 
 import net.fabricmc.fabric.api.block.FabricBlockSettings;
 import net.fabricmc.fabric.api.container.ContainerProviderRegistry;
@@ -10,7 +10,7 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import team.reborn.techrebornx.TechRebornX;
+import team.reborn.tech.x.TechRebornX;
 
 public class SlotMachineBlock extends HorizontalFacingBlock {
 	public SlotMachineBlock() {

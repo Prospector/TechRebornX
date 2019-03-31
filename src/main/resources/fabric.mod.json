@@ -3,7 +3,7 @@
   "name": "Tech Reborn X",
   "version": "$version",
   "side": "universal",
-  "initializer": "team.reborn.techrebornx.TechRebornX",
+  "initializer": "team.reborn.tech.x.TechRebornX",
   "requires": {
 	"fabric": "*"
   },
