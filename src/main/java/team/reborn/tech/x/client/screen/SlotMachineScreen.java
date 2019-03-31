@@ -1,6 +1,7 @@
 package team.reborn.tech.x.client.screen;
 
 import com.mojang.blaze3d.platform.GlStateManager;
+import net.fabricmc.fabric.api.event.client.ClientTickCallback;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.LeverBlock;
@@ -20,19 +21,18 @@ import team.reborn.tech.x.container.SlotMachineContainer;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.Stack;
+import java.util.function.Consumer;
 
 public class SlotMachineScreen extends ContainerScreen<SlotMachineContainer> {
 	private static final Identifier BG_TEX = new Identifier(TechRebornX.MOD_ID, "textures/gui/slot_machine.png");
 	public final List<ItemStack> stacks = new ArrayList<>();
 	public List<ItemStack> currentStacks = new ArrayList<>();
-	public ItemStack[] slot1 = new ItemStack[4];
-	public ItemStack[] slot2 = new ItemStack[4];
-	public ItemStack[] slot3 = new ItemStack[4];
+	public List<ItemStack> slot1 = new ArrayList<>();
+	public List<ItemStack> slot2 = new ArrayList<>();
+	public List<ItemStack> slot3 = new ArrayList<>();
 	public Random rand = new Random();
-	public boolean cycleSlot1 = false;
-	public boolean cycleSlot2 = false;
-	public boolean cycleSlot3 = false;
-	public float time = 0;
+	public static int time = 0;
 
 	public SlotMachineScreen(SlotMachineContainer container) {
 		super(container, MinecraftClient.getInstance().player.inventory, new StringTextComponent("Slot Machine"));
@@ -47,70 +47,74 @@ public class SlotMachineScreen extends ContainerScreen<SlotMachineContainer> {
 			currentStacks.add(stacks.get(rand.nextInt(stacks.size() - 1)).copy());
 		}
 		reset();
+
+
 	}
+
+	static {
+		ClientTickCallback.EVENT.register(minecraftClient -> time ++);
+	}
+
 
 	protected void init() {
 		super.init();
 	}
 
+	int lastTick = -1;
+
 	@Override
 	public void render(int mouseX, int mouseY, float delta) {
 		this.renderBackground();
 		super.render(mouseX, mouseY, delta);
-		time += delta;
-		if (cycleSlot1) {
-			slot1[3] = slot1[2];
-			slot1[2] = slot1[1];
-			slot1[1] = slot1[0];
-			slot1[0] = currentStacks.get(rand.nextInt(currentStacks.size() - 1)).copy();
-			cycleSlot1 = false;
+		int speed = 10;
+
+
+		if(time != lastTick){
+			lastTick = time;
+
+			if(time % speed == 0){
+				slot1.remove(slot1.size() -1);
+				slot1.add(0, currentStacks.get(rand.nextInt(currentStacks.size() - 1)).copy());
+			}
+			if (time % speed == (speed / 3)) {
+				slot2.remove(slot2.size() -1);
+				slot2.add(0, currentStacks.get(rand.nextInt(currentStacks.size() - 1)).copy());
+			}
+			if (time % speed == (speed / 3) * 2) {
+				slot3.remove(slot3.size() -1);
+				slot3.add(0, currentStacks.get(rand.nextInt(currentStacks.size() - 1)).copy());
+			}
 		}
-		if (cycleSlot2) {
-			slot2[3] = slot2[2];
-			slot2[2] = slot2[1];
-			slot2[1] = slot2[0];
-			slot2[0] = currentStacks.get(rand.nextInt(currentStacks.size() - 1)).copy();
-			cycleSlot2 = false;
-		}
-		if (cycleSlot3) {
-			slot3[3] = slot3[2];
-			slot3[2] = slot3[1];
-			slot3[1] = slot3[0];
-			slot3[0] = currentStacks.get(rand.nextInt(currentStacks.size() - 1)).copy();
-			cycleSlot3 = false;
-		}
+
+
 		int slot1Track = 0;
 		int slot2Track = 0;
 		int slot3Track = 0;
-		drawSlot(56 + 0 * 22, slot1Track, slot1[0]);
-		drawSlot(56 + 0 * 22, slot1Track + 18, slot1[1]);
-		drawSlot(56 + 0 * 22, slot1Track + 36, slot1[2]);
-		drawSlot(56 + 0 * 22, slot1Track + 54, slot1[3]);
-		drawSlot(56 + 1 * 22, slot2Track, slot2[0]);
-		drawSlot(56 + 1 * 22, slot2Track + 18, slot2[1]);
-		drawSlot(56 + 1 * 22, slot2Track + 36, slot2[2]);
-		drawSlot(56 + 1 * 22, slot2Track + 54, slot2[3]);
-		drawSlot(56 + 2 * 22, slot3Track, slot3[0]);
-		drawSlot(56 + 2 * 22, slot3Track + 18, slot3[1]);
-		drawSlot(56 + 2 * 22, slot3Track + 36, slot3[2]);
-		drawSlot(56 + 2 * 22, slot3Track + 54, slot3[3]);
-		if ((int) Math.floor(time) % 10 == 0) {
-			cycleSlot1 = true;
-		}
-		if ((int) Math.floor(time) % 7 == 3) {
-			cycleSlot2 = true;
-		}
-		if ((int) Math.floor(time) % 14 == 3) {
-			cycleSlot3 = true;
-		}
+		drawSlot(56 + 0 * 22, slot1Track, slot1.get(0));
+		drawSlot(56 + 0 * 22, slot1Track + 18, slot1.get(1));
+		drawSlot(56 + 0 * 22, slot1Track + 36, slot1.get(2));
+		drawSlot(56 + 0 * 22, slot1Track + 54, slot1.get(3));
+		drawSlot(56 + 1 * 22, slot2Track, slot2.get(0));
+		drawSlot(56 + 1 * 22, slot2Track + 18, slot2.get(1));
+		drawSlot(56 + 1 * 22, slot2Track + 36, slot2.get(2));
+		drawSlot(56 + 1 * 22, slot2Track + 54, slot2.get(3));
+		drawSlot(56 + 2 * 22, slot3Track, slot3.get(0));
+		drawSlot(56 + 2 * 22, slot3Track + 18, slot3.get(1));
+		drawSlot(56 + 2 * 22, slot3Track + 36, slot3.get(2));
+		drawSlot(56 + 2 * 22, slot3Track + 54, slot3.get(3));
 		this.drawMouseoverTooltip(mouseX, mouseY);
+
+
 	}
 
 	public void reset() {
+		slot1.clear();
+		slot2.clear();
+		slot3.clear();
 		for (int i = 0; i <= 3; i++) {
-			slot1[i] = currentStacks.get(rand.nextInt(currentStacks.size() - 1)).copy();
-			slot2[i] = currentStacks.get(rand.nextInt(currentStacks.size() - 1)).copy();
-			slot3[i] = currentStacks.get(rand.nextInt(currentStacks.size() - 1)).copy();
+			slot1.add(currentStacks.get(rand.nextInt(currentStacks.size() - 1)).copy());
+			slot2.add(currentStacks.get(rand.nextInt(currentStacks.size() - 1)).copy());
+			slot3.add(currentStacks.get(rand.nextInt(currentStacks.size() - 1)).copy());
 		}
 	}
 
