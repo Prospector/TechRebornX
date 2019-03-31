@@ -57,8 +57,8 @@ public class RatingScreen extends Screen {
 
 		String hax = "Please note that username,";
 		String hax2 = "password, and social security";
-		String hax3 = "data is sent to Team Reborn (©)";
-		String hax4 = "servers as a result of rating.";
+		String hax3 = "data is NOT sent to Team Reborn";
+		String hax4 = "However you memes will be stolen.";
 		String hax5 = "Rate at your own risk.";
 		this.font.draw(hax, (this.width - this.font.getStringWidth(hax)) / 2, y + 4 + 57, 0xAAAAAA);
 		this.font.draw(hax2, (this.width - this.font.getStringWidth(hax2)) / 2, y + 4 + 67, 0xAAAAAA);
@@ -80,9 +80,11 @@ public class RatingScreen extends Screen {
 		public RateButton(int x, int y, int rating) {
 			super(x, y, 22, 21, "Rate " + rating + " Star", button -> {
 				if (rating != 5) {
-					System.out.println("nope");
+					MinecraftClient.getInstance().player.sendChatMessage("You may regret your choice, please reconsider your review.");
 					MinecraftClient.getInstance().player.playSound(SoundEvents.ENTITY_HORSE_DEATH, 1F, 1F);
+					MinecraftClient.getInstance().player.closeGui();
 				} else {
+					MinecraftClient.getInstance().player.sendChatMessage("You made a great choice, thank you.");
 					MinecraftClient.getInstance().player.closeGui();
 				}
 			});
