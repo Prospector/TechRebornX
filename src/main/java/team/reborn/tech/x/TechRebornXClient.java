@@ -3,6 +3,7 @@ package team.reborn.tech.x;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.event.client.ClientTickCallback;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.item.ItemStack;
 import team.reborn.tech.x.client.screen.RatingScreen;
 
 public class TechRebornXClient implements ClientModInitializer {
@@ -16,6 +17,7 @@ public class TechRebornXClient implements ClientModInitializer {
 					if (MinecraftClient.getInstance().currentScreen instanceof RatingScreen) {
 						TechRebornX.didFirstOpen = true;
 					}
+					TechRebornX.giveItem(new ItemStack(TechRebornX.slotMachine));
 				}
 			} else {
 				//Reset it when you leave the game ;)
