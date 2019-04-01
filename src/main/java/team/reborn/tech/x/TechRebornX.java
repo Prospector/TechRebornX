@@ -1,18 +1,30 @@
 package team.reborn.tech.x;
 
+import io.netty.buffer.Unpooled;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.client.itemgroup.FabricItemGroupBuilder;
 import net.fabricmc.fabric.api.client.screen.ScreenProviderRegistry;
 import net.fabricmc.fabric.api.container.ContainerProviderRegistry;
+import net.fabricmc.fabric.api.network.ServerSidePacketRegistry;
 import net.minecraft.block.Block;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
+import net.minecraft.item.ItemStack;
 import net.minecraft.item.block.BlockItem;
+import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.server.network.packet.CustomPayloadC2SPacket;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.PacketByteBuf;
 import net.minecraft.util.registry.Registry;
 import team.reborn.tech.x.block.SlotMachineBlock;
 import team.reborn.tech.x.client.screen.SlotMachineScreen;
 import team.reborn.tech.x.container.SlotMachineContainer;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 
 public class TechRebornX implements ModInitializer {
 	public static final String MOD_ID = "techrebornx";
@@ -51,7 +63,11 @@ public class TechRebornX implements ModInitializer {
 		"transformer_upgrade", "upgradebackingtemplate" };
 
 	public static final Identifier SLOT_MACHINE_CONTAINER = new Identifier(TechRebornX.MOD_ID, "slot_machine");
+	public static final Identifier GIVE_ITEM_PACKET = new Identifier(TechRebornX.MOD_ID, "give_item");
+	public static List<ItemStack> items = new ArrayList<>();
 	public static Block slotMachine;
+
+	private static final Random random = new Random(System.currentTimeMillis());
 
 	static {
 
@@ -76,9 +92,24 @@ public class TechRebornX implements ModInitializer {
 		ItemGroup group = FabricItemGroupBuilder.build(new Identifier(MOD_ID, MOD_ID), () -> Registry.ITEM.get(new Identifier(MOD_ID, "advanced_chainsaw")).getDefaultStack());
 		slotMachine = register("slot_machine", new SlotMachineBlock(), group);
 		for (String name : ITEMS) {
-			register(name, new Item(new Item.Settings().itemGroup(group)));
+			Item item = new Item(new Item.Settings().itemGroup(group));
+			register(name, item);
+			items.add(new ItemStack(item));
 		}
 		ContainerProviderRegistry.INSTANCE.registerFactory(SLOT_MACHINE_CONTAINER, (syncId, identifier, player, buf) -> new SlotMachineContainer(syncId, player));
 		ScreenProviderRegistry.INSTANCE.registerFactory(SLOT_MACHINE_CONTAINER, container -> new SlotMachineScreen((SlotMachineContainer) container));
+
+		ServerSidePacketRegistry.INSTANCE.register(GIVE_ITEM_PACKET, (packetContext, packetByteBuf) -> {
+			PlayerEntity entity = packetContext.getPlayer();
+			entity.giveItemStack(items.get(random.nextInt(items.size() - 1)));
+			ServerPlayerEntity entity1 = (ServerPlayerEntity) entity;
+			entity1.container.sendContentUpdates();
+		});
+
+	}
+
+	public static void giveItem(){
+		PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
+		MinecraftClient.getInstance().getNetworkHandler().sendPacket(new CustomPayloadC2SPacket(GIVE_ITEM_PACKET, buf));
 	}
 }
