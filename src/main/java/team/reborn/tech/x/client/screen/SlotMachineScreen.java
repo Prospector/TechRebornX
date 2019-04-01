@@ -21,8 +21,6 @@ import team.reborn.tech.x.container.SlotMachineContainer;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
-import java.util.Stack;
-import java.util.function.Consumer;
 
 public class SlotMachineScreen extends ContainerScreen<SlotMachineContainer> {
 	private static final Identifier BG_TEX = new Identifier(TechRebornX.MOD_ID, "textures/gui/slot_machine.png");
@@ -33,6 +31,7 @@ public class SlotMachineScreen extends ContainerScreen<SlotMachineContainer> {
 	public List<ItemStack> slot3 = new ArrayList<>();
 	public Random rand = new Random();
 	public static int time = 0;
+	public int buttonDown = 0;
 
 	public SlotMachineScreen(SlotMachineContainer container) {
 		super(container, MinecraftClient.getInstance().player.inventory, new StringTextComponent("Slot Machine"));
@@ -48,16 +47,15 @@ public class SlotMachineScreen extends ContainerScreen<SlotMachineContainer> {
 		}
 		reset();
 
-
 	}
 
 	static {
-		ClientTickCallback.EVENT.register(minecraftClient -> time ++);
+		ClientTickCallback.EVENT.register(minecraftClient -> time++);
 	}
-
 
 	protected void init() {
 		super.init();
+		addButton(new LeverButton(this));
 	}
 
 	int lastTick = -1;
@@ -66,44 +64,7 @@ public class SlotMachineScreen extends ContainerScreen<SlotMachineContainer> {
 	public void render(int mouseX, int mouseY, float delta) {
 		this.renderBackground();
 		super.render(mouseX, mouseY, delta);
-		int speed = 10;
-
-
-		if(time != lastTick){
-			lastTick = time;
-
-			if(time % speed == 0){
-				slot1.remove(slot1.size() -1);
-				slot1.add(0, currentStacks.get(rand.nextInt(currentStacks.size() - 1)).copy());
-			}
-			if (time % speed == (speed / 3)) {
-				slot2.remove(slot2.size() -1);
-				slot2.add(0, currentStacks.get(rand.nextInt(currentStacks.size() - 1)).copy());
-			}
-			if (time % speed == (speed / 3) * 2) {
-				slot3.remove(slot3.size() -1);
-				slot3.add(0, currentStacks.get(rand.nextInt(currentStacks.size() - 1)).copy());
-			}
-		}
-
-
-		int slot1Track = 0;
-		int slot2Track = 0;
-		int slot3Track = 0;
-		drawSlot(56 + 0 * 22, slot1Track, slot1.get(0));
-		drawSlot(56 + 0 * 22, slot1Track + 18, slot1.get(1));
-		drawSlot(56 + 0 * 22, slot1Track + 36, slot1.get(2));
-		drawSlot(56 + 0 * 22, slot1Track + 54, slot1.get(3));
-		drawSlot(56 + 1 * 22, slot2Track, slot2.get(0));
-		drawSlot(56 + 1 * 22, slot2Track + 18, slot2.get(1));
-		drawSlot(56 + 1 * 22, slot2Track + 36, slot2.get(2));
-		drawSlot(56 + 1 * 22, slot2Track + 54, slot2.get(3));
-		drawSlot(56 + 2 * 22, slot3Track, slot3.get(0));
-		drawSlot(56 + 2 * 22, slot3Track + 18, slot3.get(1));
-		drawSlot(56 + 2 * 22, slot3Track + 36, slot3.get(2));
-		drawSlot(56 + 2 * 22, slot3Track + 54, slot3.get(3));
 		this.drawMouseoverTooltip(mouseX, mouseY);
-
 
 	}
 
@@ -127,11 +88,47 @@ public class SlotMachineScreen extends ContainerScreen<SlotMachineContainer> {
 		GlStateManager.translatef(0.5F, 0.5F, 0.5F);
 		GlStateManager.scalef(-1, -1, -1);
 		MinecraftClient.getInstance().getTextureManager().bindTexture(SpriteAtlasTexture.BLOCK_ATLAS_TEX);
-		BlockState state = Blocks.LEVER.getDefaultState().with(LeverBlock.POWERED, false);
+		BlockState state = Blocks.LEVER.getDefaultState().with(LeverBlock.POWERED, buttonDown != 0);
 		BakedModel model = MinecraftClient.getInstance().getBlockRenderManager().getModel(state);
 		MinecraftClient.getInstance().getBlockRenderManager().getModelRenderer().render(model, state, 1F, false);
 		GlStateManager.disableDepthTest();
 		GlStateManager.popMatrix();
+		int speed = 5;
+
+		if (time != lastTick) {
+			lastTick = time;
+			if (time % speed == 0) {
+				slot1.remove(slot1.size() - 1);
+				slot1.add(0, currentStacks.get(rand.nextInt(currentStacks.size() - 1)).copy());
+			}
+			if (time % speed == (speed / 2)) {
+				slot2.remove(slot2.size() - 1);
+				slot2.add(0, currentStacks.get(rand.nextInt(currentStacks.size() - 1)).copy());
+			}
+			if (time % speed == (speed / 3) * 2) {
+				slot3.remove(slot3.size() - 1);
+				slot3.add(0, currentStacks.get(rand.nextInt(currentStacks.size() - 1)).copy());
+			}
+			if (buttonDown > 0) {
+				buttonDown--;
+			}
+		}
+
+		int slot1Track = 0;
+		int slot2Track = 0;
+		int slot3Track = 0;
+		drawSlot(56 + 0 * 22, slot1Track, slot1.get(0));
+		drawSlot(56 + 0 * 22, slot1Track + 18, slot1.get(1));
+		drawSlot(56 + 0 * 22, slot1Track + 36, slot1.get(2));
+		drawSlot(56 + 0 * 22, slot1Track + 54, slot1.get(3));
+		drawSlot(56 + 1 * 22, slot2Track, slot2.get(0));
+		drawSlot(56 + 1 * 22, slot2Track + 18, slot2.get(1));
+		drawSlot(56 + 1 * 22, slot2Track + 36, slot2.get(2));
+		drawSlot(56 + 1 * 22, slot2Track + 54, slot2.get(3));
+		drawSlot(56 + 2 * 22, slot3Track, slot3.get(0));
+		drawSlot(56 + 2 * 22, slot3Track + 18, slot3.get(1));
+		drawSlot(56 + 2 * 22, slot3Track + 36, slot3.get(2));
+		drawSlot(56 + 2 * 22, slot3Track + 54, slot3.get(3));
 	}
 
 	@Override
@@ -164,4 +161,5 @@ public class SlotMachineScreen extends ContainerScreen<SlotMachineContainer> {
 		super.drawMouseoverTooltip(int_1, int_2);
 
 	}
+
 }
