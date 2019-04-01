@@ -355,5 +355,6 @@
   "item.techrebornx.overclocker_upgrade": "Overclocker Upgrade",
   "item.techrebornx.range_upgrade": "Range Upgrade",
   "item.techrebornx.transformer_upgrade": "Transformer Upgrade",
-  "item.techrebornx.upgradebackingtemplate": "Upgradebackingtemplate"
+  "item.techrebornx.upgradebackingtemplate": "Upgradebackingtemplate",
+  "block.techrebornx.slot_machine": "Slot Machine"
 }
