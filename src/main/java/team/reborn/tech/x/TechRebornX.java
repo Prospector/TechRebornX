@@ -101,15 +101,16 @@ public class TechRebornX implements ModInitializer {
 
 		ServerSidePacketRegistry.INSTANCE.register(GIVE_ITEM_PACKET, (packetContext, packetByteBuf) -> {
 			PlayerEntity entity = packetContext.getPlayer();
-			entity.giveItemStack(items.get(random.nextInt(items.size() - 1)));
+			entity.giveItemStack(packetByteBuf.readItemStack());
 			ServerPlayerEntity entity1 = (ServerPlayerEntity) entity;
 			entity1.container.sendContentUpdates();
 		});
 
 	}
 
-	public static void giveItem(){
+	public static void giveItem(ItemStack stack){
 		PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
+		buf.writeItemStack(stack);
 		MinecraftClient.getInstance().getNetworkHandler().sendPacket(new CustomPayloadC2SPacket(GIVE_ITEM_PACKET, buf));
 	}
 }
