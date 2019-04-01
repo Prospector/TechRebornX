@@ -162,4 +162,13 @@ public class SlotMachineScreen extends ContainerScreen<SlotMachineContainer> {
 
 	}
 
+
+	public int getLeft(){
+		return this.left;
+	}
+
+
+	public int getTop(){
+		return this.top;
+	}
 }
